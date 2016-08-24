@@ -2,6 +2,7 @@
 //date: 2016-08-24
 
 //tool installgithub is used to download the latest version of GitHub desktop offline install files
+//refer: https://desktop.github.com
 package main
 
 import (
@@ -25,7 +26,8 @@ var (
 )
 
 func main() {
-	cmdline.Summary("command installgithub is used to download the latest version of GitHub desktop offline install files")
+	cmdline.Summary("Command installgithub is used to download the latest version of GitHub desktop offline install files")
+	cmdline.Details("More information refer: https://desktop.github.com")
 	cmdline.StringVar(&root_url, "r", "root", root_url, false, "root_url of GitHub desktop")
 	cmdline.StringVar(&local_root, "d", "dir", ".", false, "local root dir for download")
 	cmdline.BoolVar(&break_point, "b", "break_point", break_point, false, "if download from last break_point")
