@@ -1,3 +1,6 @@
+//author :Ally Dale(vipaly@gmail.com)
+//date: 2016-08-24
+
 //tool instalgithub is used to download the latest version of GitHub desktop offline install files
 package main
 
@@ -22,7 +25,7 @@ var (
 )
 
 func main() {
-	cmdline.Summary("command is used to download the latest version of GitHub desktop offline install files")
+	cmdline.Summary("command instalgithub is used to download the latest version of GitHub desktop offline install files")
 	cmdline.StringVar(&root_url, "r", "root", root_url, false, "root_url of GitHub desktop")
 	cmdline.StringVar(&local_root, "d", "dir", ".", false, "local root dir for download")
 	cmdline.BoolVar(&break_point, "b", "break_point", break_point, false, "if download from last break_point")
@@ -94,6 +97,7 @@ func dn_from_root(brk bool) error {
 					fmt.Printf("%d/%d %s\n", i+1, n, v2.Path)
 					dn_file(v2.Path, brk)
 				}
+				fmt.Printf("\n\n\n!!!!!!!!!!!!!!Download finished, click [%s] to stat install!!!!!!!!!!!!!\n", root_file)
 			} else {
 				return e2
 			}
