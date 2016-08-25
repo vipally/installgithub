@@ -72,6 +72,21 @@ func get_dn_list(file string) (r []*File, err error) {
 						r = append(r, &nf)
 					}
 				}
+				if name == "file" {
+					var nf File
+					nf.Type = "install"
+					for _, attr := range token.Attr {
+						switch attr.Name.Local {
+						case "name":
+							nf.Path = attr.Value
+						case "size":
+							nf.Size, _ = strconv.Atoi(attr.Value)
+						}
+					}
+					if nf.Type == "install" {
+						r = append(r, &nf)
+					}
+				}
 			case xml.EndElement:
 			case xml.CharData:
 			default:
@@ -91,13 +106,20 @@ func dn_from_root(brk bool) error {
 			dir := filepath.Dir(v.Path)
 			if l2, e2 := get_dn_list(v.Path); e2 == nil {
 				n := len(l2)
+				size := 0.0
 				for i, v2 := range l2 {
 					v2.Path = dir + "\\" + v2.Path + ".deploy"
-					fmt.Printf("list%d/%d: %s\n", i+1, n, v2.Path)
+					s := float64(v2.Size) / 1024.0
+					fmt.Printf("list%d/%d %.2fK: %s\n", i+1, n, s, v2.Path)
+					size += s
 				}
+				size /= 1024.0
+				fmt.Printf("total :%.2fM\n", size)
+				dn := 0.0
 				for i, v2 := range l2 {
-					fmt.Printf("%d/%d %s\n", i+1, n, v2.Path)
+					fmt.Printf("%d/%d %.2fM/%.2fM  %s\n", i+1, n, dn, size, v2.Path)
 					dn_file(v2.Path, brk)
+					dn += float64(v2.Size) / 1024.0 / 1024.0
 				}
 				fmt.Printf("\n\n\n!!!!!!!!!!!!!!Download finished, click [%s] to stat install!!!!!!!!!!!!!\n", root_file)
 			} else {
