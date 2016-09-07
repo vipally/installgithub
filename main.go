@@ -1,4 +1,4 @@
-//author :Ally Dale(vipaly@gmail.com)
+//author :Ally Dale(vipally@gmail.com)
 //date: 2016-08-24
 
 //tool installgithub is used to download the latest version of GitHub desktop offline install files
