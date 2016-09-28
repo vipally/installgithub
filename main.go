@@ -35,7 +35,7 @@ func main() {
 	//*file = "Application Files\\GitHub_3_2_0_0\\GitHub.exe.manifest"
 	cmdline.Parse()
 	if *file != "" {
-		dn_file(*file, false)
+		dn_file(*file, false, -1)
 		return
 	} else {
 		dn_from_root(break_point)
@@ -99,10 +99,10 @@ func get_dn_list(file string) (r []*File, err error) {
 }
 
 func dn_from_root(brk bool) error {
-	dn_file(root_file, false)
+	dn_file(root_file, false, -1)
 	if l, e := get_dn_list(root_file); e == nil {
 		for _, v := range l {
-			dn_file(v.Path, false)
+			dn_file(v.Path, false, -1)
 			dir := filepath.Dir(v.Path)
 			if l2, e2 := get_dn_list(v.Path); e2 == nil {
 				n := len(l2)
@@ -118,7 +118,7 @@ func dn_from_root(brk bool) error {
 				dn := 0.0
 				for i, v2 := range l2 {
 					fmt.Printf("%d/%d %.2fM/%.2fM  %s\n", i+1, n, dn, size, v2.Path)
-					dn_file(v2.Path, brk)
+					dn_file(v2.Path, brk, v2.Size)
 					dn += float64(v2.Size) / 1024.0 / 1024.0
 				}
 				fmt.Printf("\n\n\n!!!!!!!!!!!!!!Download finished, click [%s] to stat install!!!!!!!!!!!!!\n", root_file)
@@ -132,28 +132,40 @@ func dn_from_root(brk bool) error {
 	return nil
 }
 
-func check_file(file string) bool {
+func check_file(file string, size int) bool {
 	if f, e := os.Open(file); e == nil {
+
+		if s, e := f.Stat(); e == nil {
+			if size <= 0 || s.Size() == int64(size) {
+				f.Close()
+				return true
+			}
+		}
 		f.Close()
-		return true
+		err := os.Remove(file)
+		fmt.Println("remove local file:", file, err)
 	}
 	return false
 }
 
-func dn_file(file string, brk bool) error {
+func dn_file(file string, brk bool, size int) error {
 	url := full_url(file)
 	local := local_dir(file)
 	mk_dir(file)
 	fmt.Println("downloding:", url)
-	if brk && check_file(local) {
+	if brk && check_file(local, size) {
 		fmt.Println("exist and skip", url)
 	} else {
 		cmd := exec.Command(curl, "-o", local, url)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
-		cmd.Run()
+		err := cmd.Run()
 		cmd.Wait()
 		fmt.Println("finish", url)
+		if err != nil { //error then remove local file
+			fmt.Println(err, url)
+			fmt.Println(os.Remove(local))
+		}
 	}
 
 	return nil
