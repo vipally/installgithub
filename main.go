@@ -152,19 +152,22 @@ func dn_file(file string, brk bool, size int) error {
 	url := full_url(file)
 	local := local_dir(file)
 	mk_dir(file)
-	fmt.Println("downloding:", url)
 	if brk && check_file(local, size) {
 		fmt.Println("exist and skip", url)
 	} else {
-		cmd := exec.Command(curl, "-o", local, url)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err := cmd.Run()
-		cmd.Wait()
-		fmt.Println("finish", url)
-		if err != nil { //error then remove local file
-			fmt.Println(err, url)
-			fmt.Println(os.Remove(local))
+		for i := 0; i < 3; i++ { //try 3 times
+			fmt.Println("downloding:", url)
+			cmd := exec.Command(curl, "-o", local, url)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			err := cmd.Run()
+			cmd.Wait()
+			if err != nil { //error then remove local file
+				fmt.Println(url, err, "remove local", os.Remove(local))
+			} else {
+				fmt.Println("finish", url)
+				break
+			}
 		}
 	}
 
