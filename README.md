@@ -1,4 +1,4 @@
-# installgithub
+# installgithub ![Version](https://img.shields.io/badge/version-1.0.2.final-green.svg)
 	Tool installgithub is used to download the latest version of GitHub desktop offline install files.
 	refer: https://desktop.github.com
 
