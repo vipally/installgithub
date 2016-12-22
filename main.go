@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	root_url    = "http://github-windows.s3.amazonaws.com" //下载根目录
+	root_url    = "http://github-windows.s3.amazonaws.com" //download root url
 	break_point = true
 	local_root  = "."
 	curl        = "./CURL.EXE"
