@@ -5,3 +5,6 @@
 	If you are using windows 7 64-bit OS, execute bin\installgithub.exe to start download process.
 	Other OS version, please rebuild the tool, and download the match version of tool "cURL".
 	When finish download, execute GitHub.application to start install.
+	Don't forget to download proper version of tools from:
+        curl : https://curl.haxx.se/download.html
+        mingw: http://www.mingw.org/
